@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+**/.vs/**
+**/x64/**
+
+>>>>>>> f1fb3a9 (Primeiro commit, classe jogador criada)
 # Prerequisites
 *.d
 
@@ -29,4 +35,8 @@
 # Executables
 *.exe
 *.out
+<<<<<<< HEAD
 *.app
+=======
+*.app
+>>>>>>> f1fb3a9 (Primeiro commit, classe jogador criada)
