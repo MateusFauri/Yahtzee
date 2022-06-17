@@ -1,16 +1,21 @@
 #include "Jogador.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include <iomanip> 
 #include <cctype>
+#include <set>
+#include <vector>
+#include <ctime>
 
 const int totalTabela = 40;
 const int numeracao = 3;
 const int legendasTabela = 20;
 const int pontuacaoTabela = 4;
+const int numeroDados = 5;
 
 void tabelaPontos();
 void linhaTabela(std::string linha, int numero);
 void lines(char a);
+bool yatzy(std::set<int>::iterator iterador, std::vector<int>& cartela );
 
 void Jogador::setPontuacao(int pont)
 {
@@ -42,20 +47,31 @@ int Jogador::getChances() const
 	return chances;
 }
 
+std::vector<int> Jogador::getCartela()
+{
+	return cartela;
+}
+
+void Jogador::primeiroRolamento()
+{
+	srand((unsigned)time(0));
+	dados.clear();
+	for (int i = 0; i < numeroDados; i++)
+	{
+		dados.push_back(rand()%(6) + 1);
+		//dados.push_back(4);
+		std::cout << "Dado[" << i + 1 << "]: " << dados[i] << std::endl;
+	}
+}
 
 void Jogador::jogarDados()
 {
-	//por enquanto ele renova todo os dados, sem chance de escolher qual quer rolar novamente.
-	for (int i = 0; i < dados.size(); i++)  
-	{
-		dados[i] = rand() % 6 + 1;
-		std::cout << "Dado["<< i + 1 << "]: " << dados[i] << std::endl;
-	}
+	primeiroRolamento();
 
 	char resp{ ' ' };
 	do
 	{
-		std::cout << "Voce gostaria de rolar algum dos dados novamente? [S/N] " << std::endl;
+		std::cout << "Voce gostaria de rolar algum dos dados novamente? [S/N] ";
 		std::cin >> resp;
 		if (toupper(resp) == 'S')
 		{
@@ -68,8 +84,15 @@ void Jogador::jogarDados()
 			std::cout << "Não entendi sua resposta. Tente novamente..." << std::endl;
 	} while (true);
 
+	tabelaPontos();
+	int tipoPonto{ 0 };
+	do
+	{
+		std::cout << "Qual ponto voce quer marcar? (Use a numeraçao ao lado dela) ";
+		std::cin >> tipoPonto;
+	} while (!(tipoPonto > 0 && tipoPonto < 16));
 
-	//marcarPonto();
+	marcarPonto(tipoPonto);
 }
 
 bool Jogador::repetirJogada()
@@ -109,15 +132,65 @@ void Jogador::mudarDados(int numerosDados)
 
 void Jogador::mostrarDados() const
 {
-	for (int i = 0; i < dados.size(); i++)
+	if (dados.empty())
 	{
-		std::cout << "Dado[" << i + 1 << "]: " << dados[i] << std::endl;
+		std::cout << "Não há dados para mostrar!" << std::endl;
+	}
+	else
+	{
+		for (int i = 0; i < numeroDados; i++)
+		{
+			std::cout << "Dado[" << i + 1 << "]: " << dados[i] << std::endl;
+		}
 	}
 }
 
-bool Jogador::marcarPonto()
+bool Jogador::marcarPonto(int tipoPonto)
 {
-	tabelaPontos();
+	if (tipoPonto < 7) //mudar o sete para constante
+	{
+		//Colocar logica de soma de numeros aqui
+	}
+	else
+	{
+		std::set<int> numerosContidos {};
+		for (int i=0; i < numeroDados; i++)
+		{
+			numerosContidos.insert(dados[i]);
+		}
+		std::set<int>::iterator iterador = numerosContidos.begin();
+
+		switch (numerosContidos.size())
+		{
+		case 1:
+			yatzy(iterador, cartela);
+			break;
+		case 2:
+			//contendoDois();
+			break;
+		case 3:
+			//contendoTres();
+			break;
+		case 4:
+			//contendoQuatro();
+			break;
+		case 5:
+			//contendoCinco();
+			break;
+		default:
+			//Lançar um erro aqui!
+			break;
+		}
+	}
+	return true;
+}
+
+bool yatzy(std::set<int>::iterator iterador, std::vector<int>& cartela)
+{
+	if (cartela[14] != 0)
+		return false; //ja marcou fullhouse
+	cartela[14] = *iterador * 5;
+	std::cout << cartela[14] << std::endl;
 	return true;
 }
 
