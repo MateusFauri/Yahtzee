@@ -24,8 +24,10 @@ public:
 	std::string getNome() const;
 	int getPontuacao() const;
 	int getChances() const;
-	std::vector<int> getCartela();
 
+	//mudar esse metodo para 1-mostrar a tabela do jogador
+	//2- mudar a tabela em tal ponto para tal ponto
+	std::vector<int>& getCartela();
 	
 	void jogarDados();
 	void mostrarDados() const;

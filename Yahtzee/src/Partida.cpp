@@ -12,11 +12,28 @@ const int numeracao = 3;
 const int legendasTabela = 20;
 const int pontuacaoTabela = 4;
 const int numeroDados = 5;
+const int pontosSoma = 6;
+const int par = 7;
+const int doisPares = 8;
+const int trinca = 9;
+const int quadrupla = 10;
+const int fullHouse = 11;
+const int sequenciaBaixa = 12;
+const int sequenciaAlta = 13;
+const int chance = 14;
+const int yatzy = 15;
 
 void tabelaPontos();
 void linhaTabela(std::string linha, int numero);
 void lines(char a);
-bool yatzy(std::set<int>::iterator iterador, std::vector<int>& cartela);
+int yatzyPonto(int numero);
+int somaSimples(int tipoPonto, Jogador& jogador);
+int somaPar(Jogador& jogador, int numero);
+int somaTrinca(Jogador& jogador, int numero);
+int somafullHouse(int menosNumeros, int maisNumeros);
+int somaQuadrupla(int numero);
+bool validacaoPontos(int tipoPonto, std::set<int> numerosContidos, Jogador& jogador);
+int quantosTemNoVetor(const std::vector<int>& dados, const int numero);
 
 
 void Partida::iniciarPartidas()
@@ -38,49 +55,21 @@ bool Partida::marcarPonto(Jogador &jogador)
 {
 	tabelaPontos();
 	int tipoPonto{ 0 };
+
+	std::set<int> numerosContidos{};
+	for (int i = 0; i < numeroDados; i++)
+	{
+		numerosContidos.insert(jogador.dados[i]);
+	}
+	std::set<int>::iterator iterador = numerosContidos.begin();
+
 	do
 	{
 		std::cout << "Qual ponto voce quer marcar? (Use a numeraçao ao lado dela) ";
 		std::cin >> tipoPonto;
-	} while (!(tipoPonto > 0 && tipoPonto < 16));
+	} while (!validacaoPontos(tipoPonto, numerosContidos,jogador));
 
-	if (tipoPonto < 7) //mudar o sete para constante
-	{
-		//Colocar logica de soma de numeros aqui
-	}
-	else
-	{
-		std::set<int> numerosContidos{};
-		for (int i = 0; i < numeroDados; i++)
-		{
-			numerosContidos.insert(jogador.dados[i]);
-		}
-		std::set<int>::iterator iterador = numerosContidos.begin();
 
-		std::vector<int> cartela = jogador.getCartela();
-
-		switch (numerosContidos.size())
-		{
-		case 1:
-			yatzy(iterador, cartela);
-			break;
-		case 2:
-			//contendoDois();
-			break;
-		case 3:
-			//contendoTres();
-			break;
-		case 4:
-			//contendoQuatro();
-			break;
-		case 5:
-			//contendoCinco();
-			break;
-		default:
-			//Lançar um erro aqui!
-			break;
-		}
-	}
 	return true;
 }
 
@@ -97,13 +86,204 @@ void Partida::mostrarJogadores() const
 }
 
 
-bool yatzy(std::set<int>::iterator iterador, std::vector<int>& cartela)
+
+bool validacaoPontos(int tipoPonto, std::set<int> numerosContidos, Jogador& jogador)
 {
-	if (cartela[14] != 0)
-		return false; //ja marcou fullhouse
-	cartela[14] = *iterador * 5;
-	std::cout << cartela[14] << std::endl;
-	return true;
+	std::vector<int> cartela = jogador.getCartela();
+
+	if ((tipoPonto > 0) && (tipoPonto <= pontosSoma) && (numerosContidos.count(tipoPonto) > 0))
+	{
+		if (cartela[--tipoPonto] == 0)
+		{
+			cartela[--tipoPonto] = somaSimples(tipoPonto, jogador);
+			return true;
+		}
+	}
+	else if ((tipoPonto == sequenciaBaixa || tipoPonto == sequenciaAlta || tipoPonto == chance) && numerosContidos.size() == 5)
+	{
+		if (cartela[--tipoPonto] == 0 && tipoPonto == sequenciaBaixa)
+		{
+			if ((numerosContidos.count(1) != 0) && (numerosContidos.count(2) != 0) && (numerosContidos.count(3) != 0) && (numerosContidos.count(4) != 0) && (numerosContidos.count(5) != 0))
+			{
+				// 15 é os pontos da sequencia baixa
+				cartela[--tipoPonto] = 15;
+				return true;
+			}
+		}
+		else if (cartela[--tipoPonto] == 0 && tipoPonto == sequenciaAlta)
+		{
+			if ((numerosContidos.count(2) != 0) && (numerosContidos.count(3) != 0) && (numerosContidos.count(4) != 0) && (numerosContidos.count(5) != 0) && (numerosContidos.count(6) != 0))
+			{
+				// 20 é os pontos da sequencia alta
+				cartela[--tipoPonto] = 20;
+				return true;
+			}
+		}
+		else if (cartela[--tipoPonto] == 0 && tipoPonto == chance)
+		{
+			int soma{ 0 };
+			auto it = numerosContidos.begin();
+			for (it; it != numerosContidos.end(); it++)
+			{
+				soma += *it;
+			}
+			cartela[--tipoPonto] = soma;
+			return true;
+		}
+	}
+	else if ((tipoPonto == par) && (numerosContidos.size() <= 4))
+	{
+
+		if (cartela[--tipoPonto] == 0)
+		{
+			int numero;
+			std::cout << "Qual numero você quer escolher: ";
+			std::cin >> numero;
+			if (somaPar(jogador, numero) != 0)
+			{
+				cartela[--tipoPonto] = somaPar(jogador, numero);
+				return true;
+			}
+			else {
+				std::cout << "Não da para fazer par com este numero" << std::endl;
+			}
+		}
+	}
+	else if ((tipoPonto == doisPares || tipoPonto == trinca) && (numerosContidos.size() <= 3))
+	{
+
+		if (cartela[--tipoPonto] == 0 && tipoPonto == doisPares)
+		{
+			int numero1,numero2;
+			std::cout << "Quais numeros você quer escolher: ";
+			std::cin >> numero1 >> numero2;
+			numero1 = somaPar(jogador, numero1);
+			numero2 = somaPar(jogador, numero2);
+			if ( numero1 != 0 &&  numero2 != 0)
+			{
+				cartela[--tipoPonto] =  numero1 + numero2;
+				return true;
+			}
+			else {
+				std::cout << "Não da para fazer par com este numero" << std::endl;
+			}
+		}
+		else if (cartela[--tipoPonto] == 0 && tipoPonto == trinca)
+		{
+			int numero;
+			std::cout << "Qual numero você quer escolher: ";
+			std::cin >> numero;
+			numero = somaTrinca(jogador, numero);
+			if (numero != 0)
+			{
+				cartela[--tipoPonto] = numero;
+				return true;
+			}
+			else {
+				std::cout << "Não da para fazer par com este numero" << std::endl;
+			}
+		}
+	}
+	else if ((tipoPonto == fullHouse || tipoPonto == quadrupla) && (numerosContidos.size() <= 2))
+	{
+		if (cartela[--tipoPonto] == 0 && tipoPonto == fullHouse)
+		{
+			auto it = numerosContidos.begin();
+			int maisNumeros{ *it };
+			int menosNumeros{ *(++it) };
+			if (numerosContidos.count(*it) < numerosContidos.count(*(++it)))
+			{
+				maisNumeros = *(++it);
+				menosNumeros = *it;
+			}
+			cartela[--tipoPonto] = somafullHouse(menosNumeros, maisNumeros);
+			return true;
+		}
+		else if (cartela[--tipoPonto] == 0 && tipoPonto == quadrupla)
+		{
+			auto it = numerosContidos.begin();
+			for (it; it != numerosContidos.end(); it++)
+			{
+				if (quantosTemNoVetor(jogador.dados, *it) > 3)
+				{
+					cartela[--tipoPonto] = somaQuadrupla(*it);
+					return true;
+				}
+			}
+		}
+	}
+	else if ((tipoPonto == yatzy) && (numerosContidos.size() == 1))
+	{
+		if (cartela[--tipoPonto] == 0)
+		{
+			std::set<int>::iterator it = numerosContidos.begin();
+			cartela[--tipoPonto] = yatzyPonto(*it);
+			return true;
+		}
+	}
+	std::cout << "Você não pode marcar esse ponto. Tente novamente!" << std::endl;
+	return false;
+}
+
+int somaSimples(int tipoPonto, Jogador& jogador)
+{
+	int soma{ 0 };
+	for (int i = 0; i < jogador.dados.size(); i++)
+	{
+		if (jogador.dados[i] == tipoPonto)
+			soma += jogador.dados[i];
+	}
+	return soma;
+}
+
+int somaPar(Jogador& jogador, int numero)
+{
+	int count {0};
+	for(int i=0; i < jogador.dados.size(); i++)
+	{
+		if (jogador.dados[i] == numero)	
+			count++;
+	}
+	return count > 1 ? (count * 2): 0;
+}
+
+int somaTrinca(Jogador& jogador, int numero)
+{
+	int count{ 0 };
+	for (int i = 0; i < jogador.dados.size(); i++)
+	{
+		if (jogador.dados[i] == numero)
+			count++;
+	}
+	return count > 2 ? (count * 3) : 0;
+}
+
+int somaQuadrupla(int numero)
+{
+	return numero * 4;
+}
+
+int somafullHouse(int menosNumeros, int maisNumeros)
+{
+	return (menosNumeros * 2) + (maisNumeros * 3);
+}
+
+
+int yatzyPonto(int numero)
+{
+	return numero * 5;
+}
+
+
+int quantosTemNoVetor(const std::vector<int>& dados, const int numero)
+{
+	int soma{ 0 };
+	for (auto& dado : dados)
+	{
+		if (dado == numero) soma++;
+	}
+
+	return soma;
 }
 
 //Funções para mostrar melhor no prompt
@@ -148,15 +328,14 @@ void tabelaPontos()
 	linhaTabela("Quatro ", 4);
 	linhaTabela("Cinco ", 5);
 	linhaTabela("Seis ", 6);
-	linhaTabela("Par ", 7);
-	linhaTabela("Dois Pares ", 8);
-	linhaTabela("Trinca ", 9);
-	linhaTabela("Quadrupla ", 10);
-	linhaTabela("Full House ", 11);
-	linhaTabela("Sequencia baixa ", 12);
-	linhaTabela("Sequencia alta ", 13);
-	linhaTabela("Chance ", 14);
-	linhaTabela("Yatzy ", 15);
+	linhaTabela("Par ", par);
+	linhaTabela("Dois Pares ", doisPares);
+	linhaTabela("Trinca ", trinca);
+	linhaTabela("Quadrupla ", quadrupla);
+	linhaTabela("Full House ", fullHouse);
+	linhaTabela("Sequencia baixa ", sequenciaBaixa);
+	linhaTabela("Sequencia alta ", sequenciaAlta);
+	linhaTabela("Chance ", chance);
+	linhaTabela("Yatzy ", yatzy);
 	lines('*');
 }
-

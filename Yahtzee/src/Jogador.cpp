@@ -33,7 +33,7 @@ int Jogador::getChances() const
 	return chances;
 }
 
-std::vector<int> Jogador::getCartela()
+std::vector<int>& Jogador::getCartela()
 {
 	return cartela;
 }

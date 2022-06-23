@@ -27,7 +27,7 @@ int main()
 
 	partida.mostrarJogadores();
 	partida.iniciarPartidas();
-
+	
 
 	return 0;
 }
