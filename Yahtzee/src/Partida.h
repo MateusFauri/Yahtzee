@@ -11,13 +11,14 @@ class Partida
 
 public:
 
-	Partida(std::vector<Jogador>& jogadores, int partidas)
+	Partida(std::vector<std::string>& nomeJogadores, int partidas)
 	{
 		this->partidas = partidas;
 
-		for (auto& jogador : jogadores)
+		for (auto& nomeJogador : nomeJogadores)
 		{
-			this->jogadores.push_back(jogador);
+			Jogador jogador(nomeJogador);
+			jogadores.push_back(jogador);
 		}
 	};
 	~Partida() = default;
@@ -26,7 +27,8 @@ public:
 	auto getJogadores() const { return jogadores; }
 
 	void iniciarPartidas();
-	bool marcarPonto(Jogador& jogador, int tipoPonto);
+	bool marcarPonto(Jogador& jogador);
+	void mostrarJogadores() const;
 	/*
 	void mostrarVencedores();
 	void ganhar();

@@ -1,4 +1,5 @@
 #include "Partida.h"
+#include "Partida.h"
 #include <cstdlib>
 #include <iomanip> 
 #include <cctype>
@@ -24,7 +25,8 @@ void Partida::iniciarPartidas()
 	{
 		for (auto& jogador : jogadores)
 		{
-			jogador.rolarDados();
+			jogador.jogarDados();
+			marcarPonto(jogador);
 		}
 		//vencedor = compararPontos(std::vector<Jogadores>& jogadores);
 	}
@@ -32,9 +34,10 @@ void Partida::iniciarPartidas()
 	//acabarJogo();
 }
 
-bool Partida::marcarPonto(Jogador &jogador, int tipoPonto)
+bool Partida::marcarPonto(Jogador &jogador)
 {
 	tabelaPontos();
+	int tipoPonto{ 0 };
 	do
 	{
 		std::cout << "Qual ponto voce quer marcar? (Use a numeraçao ao lado dela) ";
@@ -54,7 +57,7 @@ bool Partida::marcarPonto(Jogador &jogador, int tipoPonto)
 		}
 		std::set<int>::iterator iterador = numerosContidos.begin();
 
-		std::vector<int>& cartela = jogador.getCartela();
+		std::vector<int> cartela = jogador.getCartela();
 
 		switch (numerosContidos.size())
 		{
@@ -79,6 +82,18 @@ bool Partida::marcarPonto(Jogador &jogador, int tipoPonto)
 		}
 	}
 	return true;
+}
+
+void Partida::mostrarJogadores() const
+{
+	if (jogadores.empty())
+		std::cout << "Não há jogadores" << std::endl;
+	else {
+		for (int i = 0; i < jogadores.size(); i++)
+		{
+			std::cout << jogadores[i] << std::endl;
+		}
+	}
 }
 
 

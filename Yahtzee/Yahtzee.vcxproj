@@ -129,9 +129,11 @@
   <ItemGroup>
     <ClCompile Include="src\Jogador.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Partida.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Jogador.h" />
+    <ClInclude Include="src\Partida.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,9 +7,6 @@
 
 const int numeroDados = 5;
 
-
-
-
 void Jogador::setPontuacao(int pont)
 {
 	this->pontuacao = pont;
@@ -72,14 +69,6 @@ void Jogador::jogarDados()
 		else
 			std::cout << "Não entendi sua resposta. Tente novamente..." << std::endl;
 	} while (true);
-
-	int tipoPonto{ 0 };
-	do
-	{
-		std::cout << "Qual ponto voce quer marcar? (Use a numeraçao ao lado dela) ";
-		std::cin >> tipoPonto;
-	} while (!(tipoPonto > 0 && tipoPonto < 16));
-
 }
 
 bool Jogador::repetirJogada()
@@ -91,7 +80,7 @@ bool Jogador::repetirJogada()
 	}
 	chances--;
 	int numeroDados{ 0 };
-	std::cout << "Quantos dados você quer mudar? " << std::endl;
+	std::cout << "Quantos dados você quer mudar? ";
 	//arrumar erro de dados invalidos
 	std::cin >> numeroDados;
 	mudarDados(numeroDados);
@@ -108,7 +97,7 @@ void Jogador::mudarDados(int numerosDados)
 	{
 		int posicaoDado{ 0 };
 		int tempDado{ 0 };
-		std::cout << "Posicao do " << i + 1 << "° dado para mudança: " << std::endl;
+		std::cout << "Posicao do " << i + 1 << "° dado para mudança: ";
 		//fazer uma verificação melhor dos dados inseridos aqui
 		std::cin >> posicaoDado;
 		//verificar se o numero temporario esta certo
@@ -131,4 +120,26 @@ void Jogador::mostrarDados() const
 			std::cout << "Dado[" << i + 1 << "]: " << dados[i] << std::endl;
 		}
 	}
+}
+
+bool Jogador::operator==(const Jogador& rhs) const
+{
+	if (pontuacao == rhs.pontuacao)
+		return true;
+	else
+		return false;
+}
+
+bool Jogador::operator<(const Jogador& rhs) const
+{
+	if (pontuacao < rhs.pontuacao)
+		return true;
+	else
+		return false;
+}
+
+std::ostream& operator<<(std::ostream& os, const Jogador& jogador)
+{
+	os << "O jogador " << jogador.nome << " tem " << jogador.pontuacao << " pontos";
+	return os;
 }

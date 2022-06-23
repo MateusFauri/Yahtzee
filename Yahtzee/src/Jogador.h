@@ -15,7 +15,6 @@ class Jogador
 	bool repetirJogada();
 	void mudarDados(int numerosDados);
 
-
 public:
 	std::vector<int> dados;
 	Jogador(std::string nome = " ") : nome(nome) {};
@@ -30,5 +29,12 @@ public:
 	
 	void jogarDados();
 	void mostrarDados() const;
+
+	//overloading operator
+	bool operator==(const Jogador& rhs) const; 
+	bool operator<(const Jogador& rhs) const;
+
+	//overloading stream operator
+	friend std::ostream& operator<<(std::ostream& os, const Jogador& jogador);
 };
 
