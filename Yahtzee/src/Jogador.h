@@ -34,6 +34,8 @@ public:
 	void jogarDados();
 	void mostrarDados() const;
 	void resetarChances();
+	int contarPontos() const;
+	void resetarCartela();
 
 	//overloading operator
 	bool operator==(const Jogador& rhs) const; 

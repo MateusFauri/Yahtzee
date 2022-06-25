@@ -12,10 +12,10 @@ int main()
 	int numeroJogadores{};
 	std::vector<std::string> jogadores{};
 
-	std::cout << "Quantos partidas serão: ";
+	std::cout << "Quantos partidas serão (1-3): ";
 	std::cin >> partidas;
 
-	std::cout << "Quantos jogadores serão: ";
+	std::cout << "Quantos jogadores serão (1-3): ";
 	std::cin >> numeroJogadores;
 
 	for (int i = 0; i < numeroJogadores; i++)

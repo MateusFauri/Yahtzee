@@ -27,9 +27,10 @@ public:
 	auto getJogadores() const { return jogadores; }
 
 	void iniciarPartidas();
-	bool marcarPonto(Jogador& jogador);
+	void marcarPonto(Jogador& jogador);
 	void mostrarJogadores() const;
 	std::string compararJogadores(std::vector<Jogador>& jogadores);
+	void resetarCartelasJogadores(std::vector<Jogador>& jogadores);
 	void contarPartidasGanhas(std::vector<Jogador> jogadores, std::vector<std::string> ganhadores);
 	void mostrarVencedores() const;
 	void mostrarVencedor(std::vector<Jogador> jogadores) const;

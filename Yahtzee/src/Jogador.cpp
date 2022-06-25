@@ -4,7 +4,6 @@
 #include <iterator>
 #include <ctime>
 
-
 const int numeroDados = 5;
 
 void Jogador::setPontuacao(int pont)
@@ -32,7 +31,6 @@ int Jogador::getPartidasGanhas() const
 	return partidasGanhas;
 }
 
-
 std::string Jogador::getNome() const
 {
 	return nome;
@@ -59,8 +57,7 @@ void Jogador::primeiroRolamento()
 	dados.clear();
 	for (int i = 0; i < numeroDados; i++)
 	{
-		//dados.push_back(rand()%(6) + 1);
-		dados.push_back(5);
+		dados.push_back(rand()%(6) + 1);
 		std::cout << "Dado[" << i + 1 << "]: " << dados[i] << std::endl;
 	}
 }
@@ -132,8 +129,6 @@ void Jogador::mostrarCartela()
 	std::cout << "]" << std::endl;
 }
 
-
-
 void Jogador::mostrarDados() const
 {
 	if (dados.empty())
@@ -168,6 +163,22 @@ bool Jogador::operator<(const Jogador& rhs) const
 void Jogador::resetarChances()
 {
 	chances = 3;
+}
+
+int Jogador::contarPontos() const
+{
+	int soma{ 0 };
+	for (const auto& ponto : cartela)
+	{
+		soma += ponto;
+	}
+	return soma;
+}
+
+void Jogador::resetarCartela()
+{
+	for (auto ponto : cartela)
+		ponto = 0;
 }
 
 std::ostream& operator<<(std::ostream& os, const Jogador& jogador)

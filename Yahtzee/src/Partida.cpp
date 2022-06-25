@@ -2,9 +2,7 @@
 #include <cstdlib>
 #include <iomanip> 
 #include <cctype>
-#include <iterator>
 #include <set>
-
 
 const int totalTabela = 40;
 const int numeracao = 3;
@@ -45,15 +43,27 @@ void Partida::iniciarPartidas()
 			std::cout << "Bem-vindo " << jogador.getNome() << "! Seus dados são: " << std::endl;
 			jogador.jogarDados();
 			marcarPonto(jogador);
+			jogador.setPontuacao(jogador.contarPontos());
 			jogador.resetarChances();
 		}
-		ganhadores.push_back(compararJogadores(jogadores));
-		std::cout << "O Ganhador da rodada " << i + 1 << " foi " << ganhadores[i] << "!" << std::endl;
+		if (jogadores.size() > 1)
+		{
+			ganhadores.push_back(compararJogadores(jogadores));
+			std::cout << "O Ganhador da rodada " << i + 1 << " foi " << ganhadores[i] << "!" << std::endl;
+		}
+		else
+		{
+			std::cout << "Você fez " << jogadores[0].getPontuacao() << " pontos nessa partida!" << std::endl;
+		}
+		resetarCartelasJogadores(jogadores);
 	}
-	std::cout << "Lista de vencedores das partidas: " << std::endl;
-	mostrarVencedores();
-	contarPartidasGanhas(jogadores, ganhadores);
-	mostrarVencedor(jogadores);
+	if (jogadores.size() > 1)
+	{
+		std::cout << "Lista de vencedores das partidas: " << std::endl;
+		mostrarVencedores();
+		contarPartidasGanhas(jogadores, ganhadores);
+		mostrarVencedor(jogadores);
+	}
 	fimDeJogo();
 }
 
@@ -69,7 +79,7 @@ void Partida::mostrarJogadores() const
 	}
 }
 
-bool Partida::marcarPonto(Jogador &jogador)
+void Partida::marcarPonto(Jogador &jogador)
 {
 	tabelaPontos();
 	int tipoPonto{ 0 };
@@ -88,8 +98,6 @@ bool Partida::marcarPonto(Jogador &jogador)
 	} while (!validacaoPontos(tipoPonto, numerosContidos,jogador));
 
 	jogador.mostrarCartela();
-
-	return true;
 }
 
 std::string Partida::compararJogadores(std::vector<Jogador>& jogadores)
@@ -114,6 +122,12 @@ std::string Partida::compararJogadores(std::vector<Jogador>& jogadores)
 		return ganhadores[0];
 	else
 		return "Empate!";
+}
+
+void Partida::resetarCartelasJogadores(std::vector<Jogador>& jogadores)
+{
+	for(auto& jogador:jogadores)
+		jogador.resetarCartela();
 }
 
 void Partida::contarPartidasGanhas(std::vector<Jogador> jogadores, std::vector<std::string> ganhadores)
@@ -168,14 +182,7 @@ void Partida::fimDeJogo()
 
 bool validacaoPontos(int tipoPonto, std::set<int> numerosContidos, Jogador& jogador)
 {
-	std::cout << numerosContidos.size() << std::endl;
-	for (const auto& num : numerosContidos)
-	{
-		std::cout << num;
-	}
-	std::cout << std::endl;
-
-	if ((tipoPonto > 0) && (tipoPonto <= pontosSoma) && (numerosContidos.count(tipoPonto) > 0))
+	if ( (tipoPonto > 0 && tipoPonto <= pontosSoma ) || (tipoPonto == chance) )
 	{
 		if (jogador.getCartela()[tipoPonto - 1] == 0)
 		{
@@ -186,8 +193,19 @@ bool validacaoPontos(int tipoPonto, std::set<int> numerosContidos, Jogador& joga
 				return true;
 			}
 		}
+		else if (jogador.getCartela()[tipoPonto - 1] == 0 && tipoPonto == chance)
+		{
+			int soma{ 0 };
+			auto it = numerosContidos.begin();
+			for (it; it != numerosContidos.end(); it++)
+			{
+				soma += *it;
+			}
+			jogador.setCartela(tipoPonto - 1, soma);
+			return true;
+		}
 	}
-	else if ((tipoPonto == sequenciaBaixa || tipoPonto == sequenciaAlta || tipoPonto == chance) && numerosContidos.size() == 5)
+	else if ((tipoPonto == sequenciaBaixa || tipoPonto == sequenciaAlta) && numerosContidos.size() == 5)
 	{
 		if (jogador.getCartela()[tipoPonto - 1] == 0 && tipoPonto == sequenciaBaixa)
 		{
@@ -206,17 +224,6 @@ bool validacaoPontos(int tipoPonto, std::set<int> numerosContidos, Jogador& joga
 				jogador.setCartela(tipoPonto - 1, 20);
 				return true;
 			}
-		}
-		else if (jogador.getCartela()[tipoPonto - 1] == 0 && tipoPonto == chance)
-		{
-			int soma{ 0 };
-			auto it = numerosContidos.begin();
-			for (it; it != numerosContidos.end(); it++)
-			{
-				soma += *it;
-			}
-			jogador.setCartela(tipoPonto - 1, soma);
-			return true;
 		}
 	}
 	else if ((tipoPonto == par) && (numerosContidos.size() <= 4))
@@ -274,13 +281,15 @@ bool validacaoPontos(int tipoPonto, std::set<int> numerosContidos, Jogador& joga
 	{
 		if (jogador.getCartela()[tipoPonto - 1] == 0 && tipoPonto == fullHouse)
 		{
-			auto it = numerosContidos.begin();
-			int maisNumeros{ *it };
-			int menosNumeros{ *(++it) };
-			if (numerosContidos.count(*it) < numerosContidos.count(*(++it)))
+			auto itBegin = numerosContidos.begin();
+			auto itLast = itBegin++;
+
+			int maisNumeros{ *itBegin };
+			int menosNumeros{ *itLast };
+			if (numerosContidos.count(*itBegin) < numerosContidos.count(*itLast))
 			{
-				maisNumeros = *(++it);
-				menosNumeros = *it;
+				maisNumeros = *itLast;
+				menosNumeros = *itBegin;
 			}
 			jogador.setCartela(tipoPonto - 1, somafullHouse(menosNumeros, maisNumeros));
 			return true;
@@ -307,6 +316,7 @@ bool validacaoPontos(int tipoPonto, std::set<int> numerosContidos, Jogador& joga
 			return true;
 		}
 	}
+
 	std::cout << "Você não pode marcar esse ponto. Tente novamente!" << std::endl;
 	return false;
 }
