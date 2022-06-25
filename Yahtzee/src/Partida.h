@@ -29,11 +29,11 @@ public:
 	void iniciarPartidas();
 	bool marcarPonto(Jogador& jogador);
 	void mostrarJogadores() const;
-	/*
-	void mostrarVencedores();
-	void ganhar();
-	bool acabarPartida();
-	*/
+	std::string compararJogadores(std::vector<Jogador>& jogadores);
+	void contarPartidasGanhas(std::vector<Jogador> jogadores, std::vector<std::string> ganhadores);
+	void mostrarVencedores() const;
+	void mostrarVencedor(std::vector<Jogador> jogadores) const;
+	void fimDeJogo();
 };
 
 

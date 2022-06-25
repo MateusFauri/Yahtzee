@@ -2,13 +2,19 @@
 #include "Jogador.h"
 #include "Partida.h"
 #include <vector>
+#include <locale.h>
 
 int main()
 {
+	setlocale(LC_ALL, "Portuguese");
+	
 	int partidas{};
 	int numeroJogadores{};
 	std::vector<std::string> jogadores{};
-	
+
+	std::cout << "Quantos partidas serão: ";
+	std::cin >> partidas;
+
 	std::cout << "Quantos jogadores serão: ";
 	std::cin >> numeroJogadores;
 
@@ -20,12 +26,8 @@ int main()
 		jogadores.push_back(buffer);
 	}
 
-	std::cout << "Quantos partiads serão: ";
-	std::cin >> partidas;
-
 	Partida partida(jogadores, partidas);
 
-	partida.mostrarJogadores();
 	partida.iniciarPartidas();
 	
 

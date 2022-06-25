@@ -17,6 +17,21 @@ void Jogador::setChaces(int chances)
 	this->chances = chances;
 }
 
+void Jogador::setCartela(int numero, int pontuacao)
+{
+	this->cartela[numero] = pontuacao;
+}
+
+void Jogador::setPartidasGanhas()
+{
+	partidasGanhas++;
+}
+
+int Jogador::getPartidasGanhas() const
+{
+	return partidasGanhas;
+}
+
 
 std::string Jogador::getNome() const
 {
@@ -44,8 +59,8 @@ void Jogador::primeiroRolamento()
 	dados.clear();
 	for (int i = 0; i < numeroDados; i++)
 	{
-		dados.push_back(rand()%(6) + 1);
-		//dados.push_back(4);
+		//dados.push_back(rand()%(6) + 1);
+		dados.push_back(5);
 		std::cout << "Dado[" << i + 1 << "]: " << dados[i] << std::endl;
 	}
 }
@@ -107,6 +122,18 @@ void Jogador::mudarDados(int numerosDados)
 	}
 }
 
+void Jogador::mostrarCartela() 
+{
+	std::cout << "Cartela: [";
+	for (const auto& ponto : cartela)
+	{
+		std::cout << ponto << ", ";
+	}
+	std::cout << "]" << std::endl;
+}
+
+
+
 void Jogador::mostrarDados() const
 {
 	if (dados.empty())
@@ -136,6 +163,11 @@ bool Jogador::operator<(const Jogador& rhs) const
 		return true;
 	else
 		return false;
+}
+
+void Jogador::resetarChances()
+{
+	chances = 3;
 }
 
 std::ostream& operator<<(std::ostream& os, const Jogador& jogador)

@@ -7,6 +7,7 @@ class Jogador
 {
 	std::string nome;
 	int pontuacao {0};
+	int partidasGanhas{ 0 };
 	int chances {3};
 	
 	std::vector<int> cartela {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -21,16 +22,18 @@ public:
 
 	void setPontuacao(int pont);
 	void setChaces(int chances);
+	void setCartela(int posicao, int pontuacao);
+	void setPartidasGanhas();
+	int getPartidasGanhas() const;
 	std::string getNome() const;
 	int getPontuacao() const;
 	int getChances() const;
-
-	//mudar esse metodo para 1-mostrar a tabela do jogador
-	//2- mudar a tabela em tal ponto para tal ponto
 	std::vector<int>& getCartela();
-	
+
+	void mostrarCartela();
 	void jogarDados();
 	void mostrarDados() const;
+	void resetarChances();
 
 	//overloading operator
 	bool operator==(const Jogador& rhs) const; 
