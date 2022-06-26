@@ -1,6 +1,7 @@
 #pragma once
 #include "Jogador.h"
 #include <string>
+#include <set>
 #include <vector>
 
 class Partida
@@ -25,15 +26,16 @@ public:
 
 	int getPartidas() const { return partidas; }
 	auto getJogadores() const { return jogadores; }
-
-	void iniciarPartidas();
-	void marcarPonto(Jogador& jogador);
 	void mostrarJogadores() const;
-	std::string compararJogadores(std::vector<Jogador>& jogadores);
-	void resetarCartelasJogadores(std::vector<Jogador>& jogadores);
-	void contarPartidasGanhas(std::vector<Jogador> jogadores, std::vector<std::string> ganhadores);
 	void mostrarVencedores() const;
 	void mostrarVencedor(std::vector<Jogador> jogadores) const;
+
+	bool marcarPonto(int tipoPonto, std::set<int> numerosContidos, Jogador& jogador);
+	void iniciarPartidas();
+	void escolhaPonto(Jogador& jogador);
+	std::string compararJogadores(std::vector<Jogador>& jogadores, int partida);
+	void resetarCartelasJogadores(std::vector<Jogador>& jogadores);
+	void contarPartidasGanhas(std::vector<Jogador> jogadores, std::vector<std::string> ganhadores);
 	void fimDeJogo();
 };
 

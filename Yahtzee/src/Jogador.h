@@ -6,10 +6,10 @@
 class Jogador
 {
 	std::string nome;
-	int pontuacao {0};
 	int partidasGanhas{ 0 };
 	int chances {3};
-	
+
+	std::vector<int> pontuacoes{};
 	std::vector<int> cartela {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 	void primeiroRolamento();
@@ -26,7 +26,7 @@ public:
 	void setPartidasGanhas();
 	int getPartidasGanhas() const;
 	std::string getNome() const;
-	int getPontuacao() const;
+	int getPontuacao(int posicao) const;
 	int getChances() const;
 	std::vector<int>& getCartela();
 
@@ -36,10 +36,6 @@ public:
 	void resetarChances();
 	int contarPontos() const;
 	void resetarCartela();
-
-	//overloading operator
-	bool operator==(const Jogador& rhs) const; 
-	bool operator<(const Jogador& rhs) const;
 
 	//overloading stream operator
 	friend std::ostream& operator<<(std::ostream& os, const Jogador& jogador);

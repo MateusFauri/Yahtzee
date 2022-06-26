@@ -3,12 +3,15 @@
 #include <cctype>
 #include <iterator>
 #include <ctime>
+#include <iomanip> 
+#include <sstream>
 
 const int numeroDados = 5;
+const int chances = 3;
 
 void Jogador::setPontuacao(int pont)
 {
-	this->pontuacao = pont;
+	pontuacoes.push_back(pont);
 }
 
 void Jogador::setChaces(int chances)
@@ -36,9 +39,9 @@ std::string Jogador::getNome() const
 	return nome;
 }
 
-int Jogador::getPontuacao() const
+int Jogador::getPontuacao(int posicao) const
 {
-	return pontuacao;
+	return pontuacoes[posicao];
 }
 
 int Jogador::getChances() const
@@ -144,25 +147,9 @@ void Jogador::mostrarDados() const
 	}
 }
 
-bool Jogador::operator==(const Jogador& rhs) const
-{
-	if (pontuacao == rhs.pontuacao)
-		return true;
-	else
-		return false;
-}
-
-bool Jogador::operator<(const Jogador& rhs) const
-{
-	if (pontuacao < rhs.pontuacao)
-		return true;
-	else
-		return false;
-}
-
 void Jogador::resetarChances()
 {
-	chances = 3;
+	this->chances = chances;
 }
 
 int Jogador::contarPontos() const
@@ -183,6 +170,6 @@ void Jogador::resetarCartela()
 
 std::ostream& operator<<(std::ostream& os, const Jogador& jogador)
 {
-	os << "O jogador " << jogador.nome << " tem " << jogador.pontuacao << " pontos";
+	os << "O jogador " << jogador.nome << " tem " << jogador.contarPontos() << " pontos";
 	return os;
 }
